@@ -19,14 +19,13 @@ The following steps reproduce the vulnerability demonstration and verify the eff
 2.  **Clone Repository & Install Dependencies**:
     ```bash
     # Replace with the actual repository URL if needed
-    git clone https://github.com/Ollenmire/usdn-audit-critical.git usdn-audit-critical
-    cd usdn-audit-critical
+    $ git clone https://github.com/Ollenmire/usdn-audit-critical.git usdn-audit-critical && cd usdn-audit-critical
 
     # Initialize and fetch the exact submodule commits tracked by the repository
-    git submodule update --init --recursive
+    $ git submodule update --init --recursive
 
     # Install specific library versions required by the project
-    forge install OpenZeppelin/openzeppelin-contracts@v5.1.0 vectorized/solady@v0.0.228 foundry-rs/forge-std --no-commit
+    $ forge install OpenZeppelin/openzeppelin-contracts@v5.1.0 vectorized/solady@v0.0.228 foundry-rs/forge-std --no-commit
     ```
     *(Note: `forge install` might be redundant after `submodule update`, but ensures dependencies are linked)*
 
