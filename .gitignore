@@ -19,9 +19,6 @@ package.json
 
 # Script files
 /script/fetch_usdn.js
-/script/RebaseManipulation.s.sol
-/script/RoundingVulnerability.s.sol
-/script/UsdnPoc.s.sol
 
 # Dependencies
 dependencies/
@@ -29,4 +26,3 @@ lib/
 
 # Original findings
 /usdn-pentest-original-findings/
-/report/
