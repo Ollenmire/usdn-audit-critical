@@ -26,6 +26,7 @@ package.json
 
 # Script files
 /script/fetch_usdn.js
+# Ignore obsolete/previous PoC scripts
 /script/RebaseManipulation.s.sol
 /script/RoundingVulnerability.s.sol
 /script/UsdnPoc.s.sol
