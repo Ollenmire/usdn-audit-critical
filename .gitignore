@@ -2,35 +2,31 @@
 cache/
 out/
 
-# Dependencies
-lib/
-/dependencies/
-
 # Ignores development broadcast logs
 !/broadcast
 /broadcast/*/31337/
 /broadcast/**/dry-run/
 
-# Docs - Ignoring for now
+# Docs
 docs/
 
 # Dotenv file
 .env
 
-# Node specific
 node_modules/
 package-lock.json
 package.json
 
 # Script files
 /script/fetch_usdn.js
-# Ignore old/obsolete scripts
 /script/RebaseManipulation.s.sol
 /script/RoundingVulnerability.s.sol
 /script/UsdnPoc.s.sol
 
-# Original findings folder
-/usdn-pentest-original-findings/
+# Dependencies
+dependencies/
+lib/
 
-# Keep report in repo
-# /report/
+# Original findings
+/usdn-pentest-original-findings/
+/report/

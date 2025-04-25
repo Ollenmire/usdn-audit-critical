@@ -1,0 +1,117 @@
+Compiling 46 files with Solc 0.8.26
+Solc 0.8.26 finished in 7.19s
+Compiler run successful!
+Script ran successfully.
+
+== Logs ==
+  --- Deploying Contracts --- 
+  MaliciousCallback deployed to: 0x8Ad159a275AEE56fb2334DBb69036E9c7baCEe9b
+  Usdn (Vulnerable) deployed to: 0x1240FA2A84dd9157a0e76B5Cfe98B1d52268B264
+  UsdnFixed (Protected) deployed to: 0xfF2Bd636B9Fc89645C2D336aeaDE2E4AbaFe1eA5
+  --- Minting Initial Tokens --- 
+  User1 Initial Vulnerable Balance: 1000000000000000000000
+  User1 Initial Fixed Balance: 1000000000000000000000
+  --- Testing Vulnerable Contract: Revert Attack --- 
+  Malicious callback (REVERT) set as handler for Vulnerable contract.
+  Result: Expected: Rebase failed due to revert, divisor unchanged.
+  --- Testing Vulnerable Contract: Gas Exhaustion Attack --- 
+  Malicious callback configured for GAS_EXHAUSTION.
+  Result: Expected: Rebase failed due to gas exhaustion, divisor unchanged.
+  --- Testing Fixed Contract: Revert Attack --- 
+  Malicious callback (REVERT) set as handler for Fixed contract.
+  Result: Expected: Rebase succeeded, divisor changed, callback trapped.
+  --- Testing Fixed Contract: Gas Exhaustion Attack --- 
+  Malicious callback configured for GAS_EXHAUSTION.
+  Result: Expected: Rebase succeeded, divisor changed, callback trapped.
+  
+--- Testing Economic Impact: Blocked Rebases (Vulnerable Contract) --- 
+  Malicious callback (REVERT) set for Vulnerable contract.
+  Round 0 Initial Divisor: 1000000000000000000
+  Round 0 Initial User1 Shares: 1000000000000000000000000000000000000000
+  Round 0 Actual User1 Balance: 1000000000000000000000
+  
+Attempting Rebase Round: 1
+  Round Expected Divisor: 500000000000000000
+  Round Actual Divisor: 1000000000000000000
+  Round Expected User1 Balance: 2000000000000000000000000000000000000000
+  Round Actual User1 Balance: 1000000000000000000000
+  Round Balance Divergence: 1999999999999999999000000000000000000000
+  
+Attempting Rebase Round: 2
+  Round Expected Divisor: 500000000000000000
+  Round Actual Divisor: 1000000000000000000
+  Round Expected User1 Balance: 2000000000000000000000000000000000000000
+  Round Actual User1 Balance: 1000000000000000000000
+  Round Balance Divergence: 1999999999999999999000000000000000000000
+  
+Attempting Rebase Round: 3
+  Round Expected Divisor: 500000000000000000
+  Round Actual Divisor: 1000000000000000000
+  Round Expected User1 Balance: 2000000000000000000000000000000000000000
+  Round Actual User1 Balance: 1000000000000000000000
+  Round Balance Divergence: 1999999999999999999000000000000000000000
+  
+--- Economic Impact Summary ---
+  Final Expected User1 Balance (if rebases worked): 2000000000000000000000000000000000000000
+  Final Actual User1 Balance (rebases blocked): 1000000000000000000000
+  Total Balance Divergence after rounds: 1999999999999999999000000000000000000000
+  Conclusion: Blocking rebases significantly harms users by preventing balance growth.
+  
+--- Testing Admin Attack Scenario (Vulnerable Contract) --- 
+  Simulating Malicious Admin: 0xd95A9d28c3edc36a8F778c3456a2B196fa113F70
+  Step 1: Original admin grants role to malicious admin...
+  Malicious admin granted DEFAULT_ADMIN_ROLE.
+  Step 2a: Deployer sets existing callback to REVERT mode...
+  Callback attack type set to REVERT by deployer.
+  Step 2b: Malicious admin sets the reverting callback as handler...
+  Malicious callback set as handler by malicious admin.
+  Step 3: Original rebaser attempts rebase (should fail)...
+  --- Admin Attack Result ---
+  SUCCESS: Rebase attempt failed as expected. Divisor unchanged.
+  Conclusion: A compromised admin can permanently block the rebase function.
+  Initial Divisor: 1000000000000000000
+  Final Divisor: 1000000000000000000
+  
+--- CORE TESTS FINAL SUMMARY --- 
+  Vulnerable - Revert Attack: PASSED
+  Vulnerable - Gas Exhaustion Attack: PASSED
+  Fixed - Revert Attack: PASSED
+  Fixed - Gas Exhaustion Attack: PASSED
+  Total Core Tests Passed: 4
+  Total Core Tests Run: 4
+  
+CORE VERIFICATION COMPLETE: All core tests passed. Gas stipend fix is effective.
+
+## Setting up 1 EVM.
+  [15535] Usdn::rebase(500000000000000000 [5e17])
+    ├─ [2437] MaliciousCallback::rebaseCallback(1000000000000000000 [1e18], 500000000000000000 [5e17])
+    │   └─ ← [Revert] revert: Malicious revert attack
+    └─ ← [Revert] revert: Malicious revert attack
+
+  [1056943925] Usdn::rebase(500000000000000000 [5e17])
+    ├─ [1056929495] MaliciousCallback::rebaseCallback(1000000000000000000 [1e18], 500000000000000000 [5e17])
+    │   └─ ← [MemoryOOG] EvmError: MemoryOOG
+    └─ ← [Revert] EvmError: Revert
+
+  [15535] Usdn::rebase(500000000000000000 [5e17])
+    ├─ [2437] MaliciousCallback::rebaseCallback(1000000000000000000 [1e18], 500000000000000000 [5e17])
+    │   └─ ← [Revert] revert: Malicious revert attack
+    └─ ← [Revert] revert: Malicious revert attack
+
+  [15535] Usdn::rebase(500000000000000000 [5e17])
+    ├─ [2437] MaliciousCallback::rebaseCallback(1000000000000000000 [1e18], 500000000000000000 [5e17])
+    │   └─ ← [Revert] revert: Malicious revert attack
+    └─ ← [Revert] revert: Malicious revert attack
+
+  [15535] Usdn::rebase(500000000000000000 [5e17])
+    ├─ [2437] MaliciousCallback::rebaseCallback(1000000000000000000 [1e18], 500000000000000000 [5e17])
+    │   └─ ← [Revert] revert: Malicious revert attack
+    └─ ← [Revert] revert: Malicious revert attack
+
+  [15535] Usdn::rebase(500000000000000000 [5e17])
+    ├─ [2437] MaliciousCallback::rebaseCallback(1000000000000000000 [1e18], 500000000000000000 [5e17])
+    │   └─ ← [Revert] revert: Malicious revert attack
+    └─ ← [Revert] revert: Malicious revert attack
+
+Error: 
+Simulated execution failed.
