@@ -1,66 +1,78 @@
-## Foundry
+# USDN Rebase Callback Vulnerability Audit & PoC
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+This repository contains the contracts, tests, and Proof of Concept (PoC) scripts related to the audit finding of a critical Rebase Denial-of-Service vulnerability in the USDN token contract.
 
-Foundry consists of:
+## Vulnerability Summary
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+The original `Usdn.sol` contract's `rebase` function makes an external call to a configurable `_rebaseHandler` without sufficient gas stipends or error handling. This allows a malicious handler to block the `rebase` function via revert or gas exhaustion attacks, preventing the core divisor update mechanism and causing economic harm.
 
-## Documentation
+## Reproducing the Vulnerability and Verification
 
-https://book.getfoundry.sh/
+The following steps reproduce the vulnerability demonstration and verify the effectiveness of the proposed fix (Gas Stipend Method) using Foundry on a Unix-like environment.
 
-## Usage
+1.  **Install Foundry** ([Installation Guide](https://book.getfoundry.sh/getting-started/installation)):
+    ```bash
+    $ curl -L https://foundry.paradigm.xyz | bash && foundryup
+    ```
+    *(Follow instructions and restart your shell if necessary)*
 
-### Build
+2.  **Clone the Repository and Install Dependencies**:
+    ```bash
+    # Replace with the actual repository URL
+    $ git clone https://github.com/ollenmire/usdn-audit-critical.git usdn-audit-critical
+    $ cd usdn-audit-critical
+    $ forge install
+    ```
 
-```shell
-$ forge build
-```
+3.  **Start Anvil (Local Test Node)**:
+    Open a **separate terminal window**, navigate to the `usdn-audit-critical` directory, and run:
+    ```bash
+    $ anvil
+    ```
+    Keep this terminal running Anvil in the background.
 
-### Test
+4.  **Deploy Contracts and Run PoC Script**:
+    In your **original terminal window** (inside the `usdn-audit-critical` directory), run the comprehensive PoC script:
+    ```bash
+    $ forge clean && forge script script/FullRebaseExploitPoC.s.sol:FullRebaseExploitPoC --rpc-url http://localhost:8545 --broadcast -vvv 2>&1 | tee logs/full_rebase_poc.log
+    ```
 
-```shell
-$ forge test
-```
+5.  **Observe Vulnerability Results**:
+    Examine the script output logs. You should observe confirmations that the attacks on the *vulnerable* contract succeeded (meaning the rebase failed):
+    ```log
+    == Logs ==
+    ...
+    --- Testing Vulnerable Contract: Revert Attack ---
+    Malicious callback (REVERT) set as handler for Vulnerable contract.
+    Result: Expected: Rebase failed due to revert, divisor unchanged.
+    --- Testing Vulnerable Contract: Gas Exhaustion Attack ---
+    Malicious callback configured for GAS_EXHAUSTION.
+    Result: Expected: Rebase failed due to gas exhaustion, divisor unchanged.
+    ...
+    ```
+    The traces section will also show the `[Revert]` and `[MemoryOOG]` errors for these calls.
 
-### Format
+6.  **Observe Mitigation Verification**:
+    Continue examining the logs for the tests run against the *fixed* contract (`UsdnFixed.sol`):
+    ```log
+    == Logs ==
+    ...
+    --- Testing Fixed Contract: Revert Attack ---
+    Malicious callback (REVERT) set as handler for Fixed contract.
+    Result: Expected: Rebase succeeded, divisor changed, callback trapped.
+    --- Testing Fixed Contract: Gas Exhaustion Attack ---
+    Malicious callback configured for GAS_EXHAUSTION.
+    Result: Expected: Rebase succeeded, divisor changed, callback trapped.
+    ...
+    ```
+    These logs, along with the final summary `CORE VERIFICATION COMPLETE: All core tests passed. Gas stipend fix is effective.`, confirm that the Gas Stipend Method successfully prevents the DoS attacks.
 
-```shell
-$ forge fmt
-```
+7.  **Review Detailed Logs (Optional)**:
+    A complete, warning-free execution log is saved to `logs/full_rebase_poc.log` for detailed review.
 
-### Gas Snapshots
+## Files of Interest
 
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+*   `src/Usdn/Usdn.sol`: The original, vulnerable contract.
+*   `src/Usdn/UsdnFixed.sol`: The contract with the gas stipend mitigation applied.
+*   `script/FullRebaseExploitPoC.s.sol`: The Foundry script used to demonstrate the vulnerability and verify the fix.
+*   `logs/`: Directory containing execution logs. 

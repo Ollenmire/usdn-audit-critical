@@ -1,6 +1,18 @@
 [profile.default]
-src = "src"
+src = "src" # Point to the standard source directory
 out = "out"
 libs = ["lib"]
+
+# Standard remappings assuming 'forge install' puts libs in 'lib/'
+remappings = [
+    '@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/',
+    'solady/=lib/solady/',
+    'forge-std/=lib/forge-std/src/'
+]
+
+# Keep optimization settings
+via_ir = true
+optimizer = true
+optimizer_runs = 200
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
