@@ -16,28 +16,40 @@ The following steps reproduce the vulnerability demonstration and verify the eff
     ```
     *(Follow instructions and restart your shell if necessary)*
 
-2.  **Clone the Repository and Install Dependencies**:
+2.  **Clone Repository & Install Dependencies**:
     ```bash
-    # Replace with the actual repository URL
-    $ git clone https://github.com/ollenmire/usdn-audit-critical.git usdn-audit-critical
-    $ cd usdn-audit-critical
-    $ forge install
+    # Replace with the actual repository URL if needed
+    git clone https://github.com/Ollenmire/usdn-audit-critical.git usdn-audit-critical
+    cd usdn-audit-critical
+
+    # Initialize and fetch the exact submodule commits tracked by the repository
+    git submodule update --init --recursive
+
+    # Install specific library versions required by the project
+    forge install OpenZeppelin/openzeppelin-contracts@v5.1.0 vectorized/solady@v0.0.228 foundry-rs/forge-std --no-commit
     ```
+    *(Note: `forge install` might be redundant after `submodule update`, but ensures dependencies are linked)*
 
 3.  **Start Anvil (Local Test Node)**:
     Open a **separate terminal window**, navigate to the `usdn-audit-critical` directory, and run:
     ```bash
-    $ anvil
+    anvil
     ```
     Keep this terminal running Anvil in the background.
 
-4.  **Deploy Contracts and Run PoC Script**:
-    In your **original terminal window** (inside the `usdn-audit-critical` directory), run the comprehensive PoC script:
+4.  **Create Logs Directory**:
+    In your **original terminal window** (inside the `usdn-audit-critical` directory), create the directory for logs:
     ```bash
-    $ forge clean && forge script script/FullRebaseExploitPoC.s.sol:FullRebaseExploitPoC --rpc-url http://localhost:8545 --broadcast -vvv 2>&1 | tee logs/full_rebase_poc.log
+    mkdir logs
     ```
 
-5.  **Observe Vulnerability Results**:
+5.  **Run PoC Script**:
+    Clean artifacts and run the comprehensive PoC script:
+    ```bash
+    forge clean && forge script script/FullRebaseExploitPoC.s.sol:FullRebaseExploitPoC --rpc-url http://localhost:8545 --broadcast -vvv 2>&1 | tee logs/full_rebase_poc.log
+    ```
+
+6.  **Observe Vulnerability Results**:
     Examine the script output logs. You should observe confirmations that the attacks on the *vulnerable* contract succeeded (meaning the rebase failed):
     ```log
     == Logs ==
@@ -52,7 +64,7 @@ The following steps reproduce the vulnerability demonstration and verify the eff
     ```
     The traces section will also show the `[Revert]` and `[MemoryOOG]` errors for these calls.
 
-6.  **Observe Mitigation Verification**:
+7.  **Observe Mitigation Verification**:
     Continue examining the logs for the tests run against the *fixed* contract (`UsdnFixed.sol`):
     ```log
     == Logs ==
@@ -67,7 +79,7 @@ The following steps reproduce the vulnerability demonstration and verify the eff
     ```
     These logs, along with the final summary `CORE VERIFICATION COMPLETE: All core tests passed. Gas stipend fix is effective.`, confirm that the Gas Stipend Method successfully prevents the DoS attacks.
 
-7.  **Review Detailed Logs (Optional)**:
+8.  **Review Detailed Logs (Optional)**:
     A complete, warning-free execution log is saved to `logs/full_rebase_poc.log` for detailed review.
 
 ## Files of Interest
