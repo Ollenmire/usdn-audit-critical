@@ -1,28 +1,41 @@
-# Compiler files
+# Compiler files & Logs
 cache/
 out/
+logs/
+
+# Dependencies
+lib/
+dependencies/
+node_modules/
+
+# Node specific
+package-lock.json
+# Keep package.json to define dev dependencies if any
 
 # Ignores development broadcast logs
 !/broadcast
 /broadcast/*/31337/
 /broadcast/**/dry-run/
 
-# Docs
-docs/
+# Docs (if not part of repo)
+# docs/
 
-# Dotenv file
+# Environment variables
 .env
 
-node_modules/
-package-lock.json
-package.json
-
-# Script files
+# Obsolete/Irrelevant Scripts
 /script/fetch_usdn.js
+/script/RebaseManipulation.s.sol
+/script/RoundingVulnerability.s.sol
+/script/UsdnPoc.s.sol
+# Add others if needed
 
-# Dependencies
-dependencies/
-lib/
+# Obsolete/Irrelevant Test/Source files
+/src/Counter.sol
+/test/Counter.t.sol
+/script/Counter.s.sol
 
-# Original findings
-/usdn-pentest-original-findings/
+# Original findings archive (if not part of repo)
+# /usdn-pentest-original-findings/
+
+# Ensure report IS tracked (Do not add /report/ here)
