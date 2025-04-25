@@ -32,20 +32,20 @@ The following steps reproduce the vulnerability demonstration and verify the eff
 3.  **Start Anvil (Local Test Node)**:
     Open a **separate terminal window**, navigate to the `usdn-audit-critical` directory, and run:
     ```bash
-    anvil
+    $ anvil
     ```
     Keep this terminal running Anvil in the background.
 
 4.  **Create Logs Directory**:
     In your **original terminal window** (inside the `usdn-audit-critical` directory), create the directory for logs:
     ```bash
-    mkdir logs
+    $ mkdir logs
     ```
 
 5.  **Run PoC Script**:
     Clean artifacts and run the comprehensive PoC script:
     ```bash
-    forge clean && forge script script/FullRebaseExploitPoC.s.sol:FullRebaseExploitPoC --rpc-url http://localhost:8545 --broadcast -vvv 2>&1 | tee logs/full_rebase_poc.log
+    $ forge clean && forge script script/FullRebaseExploitPoC.s.sol:FullRebaseExploitPoC --rpc-url http://localhost:8545 --broadcast -vvv 2>&1 | tee logs/full_rebase_poc.log
     ```
 
 6.  **Observe Vulnerability Results**:
